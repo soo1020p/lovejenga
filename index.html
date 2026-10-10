@@ -38,7 +38,11 @@ async function getLink() {
 }
 getLink().then((d) => {
   if (d && d.open && d.url) {
-    location.replace(d.url.replace(/\/$/, "") + "/" + location.search);   // ?room=코드 도 그대로 넘김
+    const q = new URLSearchParams(location.search);
+    const page = { quiz: "quiz.html", balance: "balance.html" }[q.get("g")] || "";   // ?g=quiz·balance → 그 게임
+    q.delete("g");
+    const rest = q.toString();
+    location.replace(d.url.replace(/\/$/, "") + "/" + page + (rest ? "?" + rest : ""));   // ?room=코드·?coupon= 도 그대로 넘김
   } else {
     msg.innerHTML = "지금은 러브젠가가 닫혀 있어요.<br>로저에게 열어 달라고 해 주세요.";
   }
