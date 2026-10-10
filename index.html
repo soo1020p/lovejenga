@@ -36,7 +36,20 @@ async function getLink() {
   const r = await fetch("link.json?t=" + Date.now(), { cache: "no-store" });
   return r.json();
 }
-getLink().then((d) => {
+const Q = new URLSearchParams(location.search);
+if (Q.get("g") === "pet") {                        // 🐾 우리 펫 = 늘 켜져 있는 펫 서버 (pet.json)
+  document.title = "우리 펫";
+  document.querySelector("h1").innerHTML = "시에나와 로저의<br><em>우리 펫</em>";
+  msg.textContent = "펫 하우스로 가는 중이에요…";
+  fetch(API.replace("link.json", "pet.json") + "&t=" + Date.now(), { headers: { Accept: "application/vnd.github.raw+json" }, cache: "no-store" })
+    .then((r) => (r.ok ? r.json() : fetch("pet.json?t=" + Date.now(), { cache: "no-store" }).then((x) => x.json())))
+    .then((d) => {
+      if (!d || !d.open || !d.url) throw 0;
+      Q.delete("g");
+      location.replace(d.url.replace(/\/$/, "") + "/?" + Q.toString());   // ?k=열쇠 그대로
+    })
+    .catch(() => { msg.innerHTML = "펫 하우스에 연결하지 못했어요.<br>잠시 뒤 다시 눌러 주세요."; });
+} else getLink().then((d) => {
   if (d && d.open && d.url) {
     const q = new URLSearchParams(location.search);
     const page = { quiz: "quiz.html", balance: "balance.html", read: "read.html" }[q.get("g")] || "";   // ?g=quiz·balance → 그 게임
