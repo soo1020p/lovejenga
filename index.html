@@ -39,7 +39,7 @@ async function getLink() {
 getLink().then((d) => {
   if (d && d.open && d.url) {
     const q = new URLSearchParams(location.search);
-    const page = { quiz: "quiz.html", balance: "balance.html" }[q.get("g")] || "";   // ?g=quiz·balance → 그 게임
+    const page = { quiz: "quiz.html", balance: "balance.html", read: "read.html" }[q.get("g")] || "";   // ?g=quiz·balance → 그 게임
     q.delete("g");
     const rest = q.toString();
     location.replace(d.url.replace(/\/$/, "") + "/" + page + (rest ? "?" + rest : ""));   // ?room=코드·?coupon= 도 그대로 넘김
